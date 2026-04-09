@@ -124,6 +124,74 @@ export function getIrrigationRecommendations(
   })
 }
 
+// Comprehensive chatbot dataset for irrigation advice
+const chatbotDataset = {
+  en: {
+    greetings: ["hello", "hi", "hey", "namaste", "good morning", "good evening"],
+    greetingResponse: "Hello! I am your Smart Irrigation assistant. How can I help you today? Ask me about weather, irrigation, crops, or farming tips.",
+    
+    irrigationKeywords: ["irrigate", "irrigation", "water", "watering", "should i water"],
+    weatherKeywords: ["weather", "temperature", "climate", "hot", "cold", "humid"],
+    rainKeywords: ["rain", "rainfall", "raining", "monsoon", "shower"],
+    tomorrowKeywords: ["tomorrow", "next day", "day after"],
+    todayKeywords: ["today", "now", "current"],
+    cropKeywords: ["crop", "recommend", "suggest", "grow", "yield", "best", "suitable", "plant", "what should"],
+    soilKeywords: ["soil", "land", "ground", "earth", "mud"],
+    helpKeywords: ["help", "what can you do", "options", "features"],
+    
+    helpResponse: "I can help you with:\n1. Today's weather and irrigation advice\n2. Rain forecast for tomorrow\n3. Crop recommendations for your land\n4. Water requirements for your crops\n5. Soil-based farming tips\n\nJust ask me anything!",
+    soilResponse: (soilType: string) => `Your ${soilType} soil ${soilType === 'sandy' ? 'drains quickly, so water more frequently but less amount' : soilType === 'clay' ? 'retains water well, so water less frequently' : 'has balanced drainage, ideal for most crops'}.`,
+  },
+  kn: {
+    greetings: ["ನಮಸ್ಕಾರ", "ಹಲೋ", "ಹೇ", "ಶುಭೋದಯ", "ಶುಭ ಸಂಜೆ"],
+    greetingResponse: "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಸ್ಮಾರ್ಟ್ ನೀರಾವರಿ ಸಹಾಯಕ. ಇಂದು ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು? ಹವಾಮಾನ, ನೀರಾವರಿ, ಬೆಳೆ ಅಥವಾ ಕೃಷಿ ಸಲಹೆಗಳ ಬಗ್ಗೆ ಕೇಳಿ.",
+    
+    irrigationKeywords: ["ನೀರು", "ನೀರಾವರಿ", "ನೀರು ಹಾಕು", "ನೀರು ಬೇಕಾ"],
+    weatherKeywords: ["ಹವಾಮಾನ", "ತಾಪಮಾನ", "ಬಿಸಿ", "ತಂಪು", "ಆರ್ದ್ರತೆ"],
+    rainKeywords: ["ಮಳೆ", "ಮಳೆ ಬರುತ್ತಾ", "ಮಾನ್ಸೂನ್"],
+    tomorrowKeywords: ["ನಾಳೆ", "ಮುಂದಿನ ದಿನ"],
+    todayKeywords: ["ಇಂದು", "ಈಗ", "ಪ್ರಸ್ತುತ"],
+    cropKeywords: ["ಬೆಳೆ", "ಶಿಫಾರಸು", "ಬೆಳೆಯಿರಿ", "ಇಳುವರಿ", "ಉತ್ತಮ", "ಯಾವ ಬೆಳೆ"],
+    soilKeywords: ["ಮಣ್ಣು", "ಭೂಮಿ", "ನೆಲ"],
+    helpKeywords: ["ಸಹಾಯ", "ಏನು ಮಾಡಬಹುದು", "ವೈಶಿಷ್ಟ್ಯಗಳು"],
+    
+    helpResponse: "ನಾನು ಈ ವಿಷಯಗಳಲ್ಲಿ ಸಹಾಯ ಮಾಡಬಹುದು:\n1. ಇಂದಿನ ಹವಾಮಾನ ಮತ್ತು ನೀರಾವರಿ ಸಲಹೆ\n2. ನಾಳೆಯ ಮಳೆ ಮುನ್ಸೂಚನೆ\n3. ನಿಮ್ಮ ಭೂಮಿಗೆ ಬೆಳೆ ಶಿಫಾರಸುಗಳು\n4. ನಿಮ್ಮ ಬೆಳೆಗಳಿಗೆ ನೀರಿನ ಅವಶ್ಯಕತೆಗಳು\n5. ಮಣ್ಣು ಆಧಾರಿತ ಕೃಷಿ ಸಲಹೆಗಳು",
+    soilResponse: (soilType: string) => `ನಿಮ್ಮ ${soilType === 'sandy' ? 'ಮರಳು ಮಣ್ಣು ಬೇಗ ಒಣಗುತ್ತದೆ, ಆಗಾಗ್ಗೆ ಕಡಿಮೆ ನೀರು ಹಾಕಿ' : soilType === 'clay' ? 'ಜೇಡಿ ಮಣ್ಣು ನೀರನ್ನು ಚೆನ್ನಾಗಿ ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳುತ್ತದೆ, ಕಡಿಮೆ ಬಾರಿ ನೀರು ಹಾಕಿ' : 'ಗೋಡು ಮಣ್ಣು ಸಮತೋಲಿತವಾಗಿದೆ, ಹೆಚ್ಚಿನ ಬೆಳೆಗಳಿಗೆ ಸೂಕ್ತ'}.`,
+  },
+  hi: {
+    greetings: ["नमस्ते", "हेलो", "हाय", "सुप्रभात", "शुभ संध्या"],
+    greetingResponse: "नमस्ते! मैं आपका स्मार्ट सिंचाई सहायक हूं। आज मैं आपकी कैसे मदद कर सकता हूं? मौसम, सिंचाई, फसल या खेती की सलाह के बारे में पूछें।",
+    
+    irrigationKeywords: ["सिंचाई", "पानी", "पानी देना", "क्या पानी दूं"],
+    weatherKeywords: ["मौसम", "तापमान", "गर्म", "ठंडा", "नमी"],
+    rainKeywords: ["बारिश", "वर्षा", "मानसून"],
+    tomorrowKeywords: ["कल", "अगले दिन"],
+    todayKeywords: ["आज", "अभी", "वर्तमान"],
+    cropKeywords: ["फसल", "सिफारिश", "उगाएं", "उपज", "क्या उगाएं", "कौन सी फसल"],
+    soilKeywords: ["मिट्टी", "जमीन", "भूमि"],
+    helpKeywords: ["मदद", "क्या कर सकते हो", "विशेषताएं"],
+    
+    helpResponse: "मैं इन विषयों में मदद कर सकता हूं:\n1. आज का मौसम और सिंचाई सलाह\n2. कल की बारिश का पूर्वानुमान\n3. आपकी जमीन के लिए फसल सिफारिशें\n4. आपकी फसलों की पानी आवश्यकताएं\n5. मिट्टी आधारित खेती सलाह",
+    soilResponse: (soilType: string) => `आपकी ${soilType === 'sandy' ? 'रेतीली मिट्टी जल्दी सूखती है, बार-बार कम पानी दें' : soilType === 'clay' ? 'चिकनी मिट्टी पानी अच्छी तरह रखती है, कम बार पानी दें' : 'दोमट मिट्टी संतुलित है, अधिकांश फसलों के लिए उपयुक्त'}।`,
+  },
+  te: {
+    greetings: ["నమస్కారం", "హలో", "హాయ్", "శుభోదయం", "శుభ సాయంత్రం"],
+    greetingResponse: "నమస్కారం! నేను మీ స్మార్ట్ నీటిపారుదల సహాయకుడిని. ఈ రోజు నేను మీకు ఎలా సహాయం చేయగలను? వాతావరణం, నీటిపారుదల, పంట లేదా వ్యవసాయ చిట్కాల గురించి అడగండి.",
+    
+    irrigationKeywords: ["నీరు", "నీటిపారుదల", "నీరు పెట్టు", "నీరు అవసరమా"],
+    weatherKeywords: ["వాతావరణం", "ఉష్ణోగ్రత", "వేడి", "చల్లని", "తేమ"],
+    rainKeywords: ["వర్షం", "వర్షపాతం", "రుతుపవనాలు"],
+    tomorrowKeywords: ["రేపు", "మరుసటి రోజు"],
+    todayKeywords: ["ఈ రోజు", "ఇప్పుడు", "ప్రస్తుతం"],
+    cropKeywords: ["పంట", "సిఫార్సు", "పండించు", "దిగుబడి", "ఏమి పండించాలి", "ఏ పంట"],
+    soilKeywords: ["నేల", "భూమి", "మట్టి"],
+    helpKeywords: ["సహాయం", "ఏమి చేయగలవు", "ఫీచర్లు"],
+    
+    helpResponse: "నేను ఈ విషయాలలో సహాయం చేయగలను:\n1. ఈ రోజు వాతావరణం మరియు నీటిపారుదల సలహా\n2. రేపటి వర్షం అంచనా\n3. మీ భూమికి పంట సిఫార్సులు\n4. మీ పంటలకు నీటి అవసరాలు\n5. నేల ఆధారిత వ్యవసాయ చిట్కాలు",
+    soilResponse: (soilType: string) => `మీ ${soilType === 'sandy' ? 'ఇసుక నేల త్వరగా ఆరిపోతుంది, తరచుగా తక్కువ నీరు పెట్టండి' : soilType === 'clay' ? 'బంక నేల నీటిని బాగా నిలుపుకుంటుంది, తక్కువసార్లు నీరు పెట్టండి' : 'గరప నేల సమతుల్యంగా ఉంది, చాలా పంటలకు అనుకూలం'}.`,
+  }
+}
+
 // Chatbot responses based on dataset patterns
 export function getChatbotResponse(
   query: string, 
@@ -137,35 +205,71 @@ export function getChatbotResponse(
   const lowerQuery = query.toLowerCase()
   const today = weather[0]
   const tomorrow = weather[1]
+  const dataset = chatbotDataset[language]
 
+  // Check for greetings
+  if (dataset.greetings.some(g => lowerQuery.includes(g))) {
+    return dataset.greetingResponse
+  }
+
+  // Check for help request
+  if (dataset.helpKeywords.some(k => lowerQuery.includes(k))) {
+    return dataset.helpResponse
+  }
+
+  // Dynamic responses based on current weather
   const responses = {
     en: {
-      irrigateToday: `Rain expected ${today.rainProbability}%. ${today.rainProbability > 60 ? "No irrigation needed." : "Irrigate your crops."}`,
-      rainTomorrow: `Tomorrow rain expected ${tomorrow.rainMm} mm. ${tomorrow.rainProbability > 60 ? "No irrigation needed." : "Plan for irrigation."}`,
-      weather: `Today: ${today.temperature}°C, ${today.humidity}% humidity, ${today.rainProbability}% rain chance.`,
-      waterNeed: `Based on weather, your crop needs ${today.rainProbability > 60 ? "no" : "5-8 mm"} water today.`,
-      default: "I can help with irrigation advice. Ask about today's weather, rain forecast, or irrigation needs."
+      irrigateToday: today.rainProbability > 60 
+        ? `Rain probability is ${today.rainProbability}% today with expected ${today.rainMm}mm rainfall. No irrigation needed. Save water and let nature do the work!`
+        : today.rainProbability > 30
+        ? `Moderate rain chance (${today.rainProbability}%) today. Give light irrigation only - about 3-4mm water.`
+        : `Low rain probability (${today.rainProbability}%) today. Your crops need irrigation. Provide 5-8mm water based on your crop type.`,
+      rainTomorrow: `Tomorrow's forecast: ${tomorrow.rainProbability}% rain probability with ${tomorrow.rainMm}mm expected rainfall. Temperature: ${tomorrow.temperature}°C. ${tomorrow.rainProbability > 60 ? "Plan to skip irrigation tomorrow." : "Plan for irrigation tomorrow."}`,
+      weather: `Current weather: Temperature ${today.temperature}°C, Humidity ${today.humidity}%, Rain probability ${today.rainProbability}%. ${today.temperature > 35 ? "High heat - crops may need extra water." : today.temperature < 20 ? "Cool weather - reduce irrigation." : "Normal conditions for farming."}`,
+      waterNeed: cropType 
+        ? `Your ${translations?.crops[cropType] || cropType} crop needs ${today.rainProbability > 60 ? "no additional" : cropType === 'rice' ? "8-12mm" : cropType === 'wheat' ? "4-6mm" : "5-7mm"} water today based on weather and crop requirements.`
+        : `Based on today's weather, crops generally need ${today.rainProbability > 60 ? "no" : "5-8mm"} water. Select your crop type for specific recommendations.`,
+      default: dataset.helpResponse
     },
     kn: {
-      irrigateToday: `ಮಳೆ ${today.rainProbability}% ನಿರೀಕ್ಷಿತ. ${today.rainProbability > 60 ? "ನೀರಾವರಿ ಬೇಡ." : "ಬೆಳೆಗೆ ನೀರು ಹಾಕಿ."}`,
-      rainTomorrow: `ನಾಳೆ ${tomorrow.rainMm} ಮಿಮೀ ಮಳೆ ನಿರೀಕ್ಷಿತ. ${tomorrow.rainProbability > 60 ? "ನೀರಾವರಿ ಬೇಡ." : "ನೀರಾವರಿ ಯೋಜಿಸಿ."}`,
-      weather: `ಇಂದು: ${today.temperature}°C, ${today.humidity}% ಆರ್ದ್ರತೆ, ${today.rainProbability}% ಮಳೆ ಸಾಧ್ಯತೆ.`,
-      waterNeed: `ಹವಾಮಾನದ ಪ್ರಕಾರ, ಇಂದು ${today.rainProbability > 60 ? "ನೀರು ಬೇಡ" : "5-8 ಮಿಮೀ ನೀರು ಬೇಕು"}.`,
-      default: "ನೀರಾವರಿ ಸಲಹೆಗಾಗಿ ಕೇಳಿ. ಇಂದಿನ ಹವಾಮಾನ, ಮಳೆ ಅಥವಾ ನೀರಾವರಿ ಬಗ್ಗೆ ಕೇಳಿ."
+      irrigateToday: today.rainProbability > 60 
+        ? `ಇಂದು ಮಳೆ ಸಾಧ್ಯತೆ ${today.rainProbability}%, ${today.rainMm}ಮಿಮೀ ಮಳೆ ನಿರೀಕ್ಷಿತ. ನೀರಾವರಿ ಬೇಡ. ನೀರು ಉಳಿಸಿ!`
+        : today.rainProbability > 30
+        ? `ಇಂದು ಮಧ್ಯಮ ಮಳೆ ಸಾಧ್ಯತೆ (${today.rainProbability}%). ಕಡಿಮೆ ನೀರಾವರಿ - 3-4ಮಿಮೀ ಮಾತ್ರ.`
+        : `ಇಂದು ಕಡಿಮೆ ಮಳೆ ಸಾಧ್ಯತೆ (${today.rainProbability}%). ಬೆಳೆಗೆ ನೀರು ಹಾಕಿ. 5-8ಮಿಮೀ ನೀರು ಕೊಡಿ.`,
+      rainTomorrow: `ನಾಳೆಯ ಮುನ್ಸೂಚನೆ: ${tomorrow.rainProbability}% ಮಳೆ ಸಾಧ್ಯತೆ, ${tomorrow.rainMm}ಮಿಮೀ ಮಳೆ ನಿರೀಕ್ಷಿತ. ತಾಪಮಾನ: ${tomorrow.temperature}°C. ${tomorrow.rainProbability > 60 ? "ನಾಳೆ ನೀರಾವರಿ ಬೇಡ." : "ನಾಳೆ ನೀರಾವರಿ ಯೋಜಿಸಿ."}`,
+      weather: `ಈಗಿನ ಹವಾಮಾನ: ತಾಪಮಾನ ${today.temperature}°C, ಆರ್ದ್ರತೆ ${today.humidity}%, ಮಳೆ ಸಾಧ್ಯತೆ ${today.rainProbability}%. ${today.temperature > 35 ? "ಹೆಚ್ಚಿನ ಬಿಸಿ - ಬೆಳೆಗಳಿಗೆ ಹೆಚ್ಚು ನೀರು ಬೇಕು." : today.temperature < 20 ? "ತಂಪು ಹವಾಮಾನ - ನೀರಾವರಿ ಕಡಿಮೆ ಮಾಡಿ." : "ಸಾಮಾನ್ಯ ಕೃಷಿ ಪರಿಸ್ಥಿತಿ."}`,
+      waterNeed: cropType 
+        ? `ನಿಮ್ಮ ${translations?.crops[cropType] || cropType} ಬೆಳೆಗೆ ಇಂದು ${today.rainProbability > 60 ? "ಹೆಚ್ಚುವರಿ ನೀರು ಬೇಡ" : cropType === 'rice' ? "8-12ಮಿಮೀ" : cropType === 'wheat' ? "4-6ಮಿಮೀ" : "5-7ಮಿಮೀ"} ನೀರು ಬೇಕು.`
+        : `ಇಂದಿನ ಹವಾಮಾನದ ಪ್ರಕಾರ, ${today.rainProbability > 60 ? "ನೀರು ಬೇಡ" : "5-8ಮಿಮೀ ನೀರು ಬೇಕು"}. ನಿಖರ ಶಿಫಾರಸಿಗಾಗಿ ಬೆಳೆ ಆಯ್ಕೆ ಮಾಡಿ.`,
+      default: dataset.helpResponse
     },
     hi: {
-      irrigateToday: `बारिश ${today.rainProbability}% अपेक्षित. ${today.rainProbability > 60 ? "सिंचाई की जरूरत नहीं." : "फसल की सिंचाई करें."}`,
-      rainTomorrow: `कल ${tomorrow.rainMm} मिमी बारिश अपेक्षित. ${tomorrow.rainProbability > 60 ? "सिंचाई की जरूरत नहीं." : "सिंचाई की योजना बनाएं."}`,
-      weather: `आज: ${today.temperature}°C, ${today.humidity}% नमी, ${today.rainProbability}% बारिश की संभावना.`,
-      waterNeed: `मौसम के अनुसार, आज ${today.rainProbability > 60 ? "पानी की जरूरत नहीं" : "5-8 मिमी पानी चाहिए"}.`,
-      default: "सिंचाई सलाह के लिए पूछें. आज का मौसम, बारिश या सिंचाई के बारे में पूछें."
+      irrigateToday: today.rainProbability > 60 
+        ? `आज बारिश की संभावना ${today.rainProbability}%, ${today.rainMm}मिमी बारिश अपेक्षित। सिंचाई की जरूरत नहीं। पानी बचाएं!`
+        : today.rainProbability > 30
+        ? `आज मध्यम बारिश की संभावना (${today.rainProbability}%)। हल्की सिंचाई करें - 3-4मिमी।`
+        : `आज कम बारिश की संभावना (${today.rainProbability}%)। फसल को पानी दें। 5-8मिमी पानी दें।`,
+      rainTomorrow: `कल का पूर्वानुमान: ${tomorrow.rainProbability}% बारिश संभावना, ${tomorrow.rainMm}मिमी बारिश अपेक्षित। तापमान: ${tomorrow.temperature}°C। ${tomorrow.rainProbability > 60 ? "कल सिंचाई न करें।" : "कल सिंचाई की योजना बनाएं।"}`,
+      weather: `वर्तमान मौसम: तापमान ${today.temperature}°C, नमी ${today.humidity}%, बारिश संभावना ${today.rainProbability}%। ${today.temperature > 35 ? "अधिक गर्मी - फसलों को अतिरिक्त पानी चाहिए।" : today.temperature < 20 ? "ठंडा मौसम - सिंचाई कम करें।" : "सामान्य खेती की स्थिति।"}`,
+      waterNeed: cropType 
+        ? `आपकी ${translations?.crops[cropType] || cropType} फसल को आज ${today.rainProbability > 60 ? "अतिरिक्त पानी नहीं" : cropType === 'rice' ? "8-12मिमी" : cropType === 'wheat' ? "4-6मिमी" : "5-7मिमी"} पानी चाहिए।`
+        : `आज के मौसम के अनुसार, ${today.rainProbability > 60 ? "पानी नहीं चाहिए" : "5-8मिमी पानी चाहिए"}। सटीक सिफारिश के लिए फसल चुनें।`,
+      default: dataset.helpResponse
     },
     te: {
-      irrigateToday: `వర్షం ${today.rainProbability}% ఆశిస్తోంది. ${today.rainProbability > 60 ? "నీటిపారుదల అవసరం లేదు." : "పంటకు నీరు పెట్టండి."}`,
-      rainTomorrow: `రేపు ${tomorrow.rainMm} మిమీ వర్షం ఆశిస్తోంది. ${tomorrow.rainProbability > 60 ? "నీటిపారుదల అవసరం లేదు." : "నీటిపారుదల ప్లాన్ చేయండి."}`,
-      weather: `ఈ రోజు: ${today.temperature}°C, ${today.humidity}% తేమ, ${today.rainProbability}% వర్షం అవకాశం.`,
-      waterNeed: `వాతావరణం ప్రకారం, ఈ రోజు ${today.rainProbability > 60 ? "నీరు అవసరం లేదు" : "5-8 మిమీ నీరు అవసరం"}.`,
-      default: "నీటిపారుదల సలహా కోసం అడగండి. ఈ రోజు వాతావరణం, వర్షం లేదా నీటిపారుదల గురించి అడగండి."
+      irrigateToday: today.rainProbability > 60 
+        ? `ఈ రోజు వర్షం అవకాశం ${today.rainProbability}%, ${today.rainMm}మిమీ వర్షం అంచనా. నీటిపారుదల అవసరం లేదు. నీరు ఆదా చేయండి!`
+        : today.rainProbability > 30
+        ? `ఈ రోజు మధ్యస్థ వర్షం అవకాశం (${today.rainProbability}%). తేలికపాటి నీటిపారుదల - 3-4మిమీ మాత్రమే.`
+        : `ఈ రోజు తక్కువ వర్షం అవకాశం (${today.rainProbability}%). పంటకు నీరు పెట్టండి. 5-8మిమీ నీరు ఇవ్వండి.`,
+      rainTomorrow: `రేపటి అంచనా: ${tomorrow.rainProbability}% వర్షం అవకాశం, ${tomorrow.rainMm}మిమీ వర్షం అంచనా. ఉష్ణోగ్రత: ${tomorrow.temperature}°C. ${tomorrow.rainProbability > 60 ? "రేపు నీటిపారుదల వద్దు." : "రేపు నీటిపారుదల ప్లాన్ చేయండి."}`,
+      weather: `ప్రస్తుత వాతావరణం: ఉష్ణోగ్రత ${today.temperature}°C, తేమ ${today.humidity}%, వర్షం అవకాశం ${today.rainProbability}%. ${today.temperature > 35 ? "అధిక వేడి - పంటలకు ఎక్కువ నీరు అవసరం." : today.temperature < 20 ? "చల్లని వాతావరణం - నీటిపారుదల తగ్గించండి." : "సాధారణ వ్యవసాయ పరిస్థితి."}`,
+      waterNeed: cropType 
+        ? `మీ ${translations?.crops[cropType] || cropType} పంటకు ఈ రోజు ${today.rainProbability > 60 ? "అదనపు నీరు అవసరం లేదు" : cropType === 'rice' ? "8-12మిమీ" : cropType === 'wheat' ? "4-6మిమీ" : "5-7మిమీ"} నీరు అవసరం.`
+        : `ఈ రోజు వాతావరణం ప్రకారం, ${today.rainProbability > 60 ? "నీరు అవసరం లేదు" : "5-8మిమీ నీరు అవసరం"}. ఖచ్చితమైన సిఫార్సు కోసం పంట ఎంచుకోండి.`,
+      default: dataset.helpResponse
     }
   }
 
@@ -235,18 +339,33 @@ export function getChatbotResponse(
     }
   }
 
-  // Pattern matching for common queries
-  if (lowerQuery.includes("irrigate") || lowerQuery.includes("today") || lowerQuery.includes("ನೀರು") || lowerQuery.includes("ಇಂದು") || lowerQuery.includes("सिंचाई") || lowerQuery.includes("आज")) {
-    return resp.irrigateToday
+  // Check for soil-related queries
+  if (dataset.soilKeywords.some(k => lowerQuery.includes(k))) {
+    if (soilType) {
+      return dataset.soilResponse(soilType)
+    }
+    const soilPrompt = {
+      en: "Please select your soil type first (Sandy, Loamy, or Clay) to get specific soil advice.",
+      kn: "ನಿರ್ದಿಷ್ಟ ಮಣ್ಣು ಸಲಹೆಗಾಗಿ ದಯವಿಟ್ಟು ಮೊದಲು ನಿಮ್ಮ ಮಣ್ಣಿನ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+      hi: "विशिष्ट मिट्टी सलाह के लिए कृपया पहले अपनी मिट्टी का प्रकार चुनें।",
+      te: "నిర్దిష్ట నేల సలహా కోసం దయచేసి మీ నేల రకాన్ని ఎంచుకోండి."
+    }
+    return soilPrompt[language]
   }
-  if (lowerQuery.includes("tomorrow") || lowerQuery.includes("rain") || lowerQuery.includes("ನಾಳೆ") || lowerQuery.includes("ಮಳೆ") || lowerQuery.includes("कल") || lowerQuery.includes("बारिश") || lowerQuery.includes("రేపు") || lowerQuery.includes("వర్షం")) {
+
+  // Pattern matching using dataset keywords - check tomorrow first (more specific)
+  if (dataset.tomorrowKeywords.some(k => lowerQuery.includes(k)) || dataset.rainKeywords.some(k => lowerQuery.includes(k))) {
     return resp.rainTomorrow
   }
-  if (lowerQuery.includes("weather") || lowerQuery.includes("temperature") || lowerQuery.includes("ಹವಾಮಾನ") || lowerQuery.includes("मौसम") || lowerQuery.includes("వాతావరణం")) {
-    return resp.weather
+  
+  // Check for irrigation/today queries
+  if (dataset.irrigationKeywords.some(k => lowerQuery.includes(k)) || dataset.todayKeywords.some(k => lowerQuery.includes(k))) {
+    return resp.irrigateToday
   }
-  if (lowerQuery.includes("water") || lowerQuery.includes("need") || lowerQuery.includes("ನೀರು") || lowerQuery.includes("पानी") || lowerQuery.includes("నీరు")) {
-    return resp.waterNeed
+  
+  // Check for weather queries
+  if (dataset.weatherKeywords.some(k => lowerQuery.includes(k))) {
+    return resp.weather
   }
 
   return resp.default

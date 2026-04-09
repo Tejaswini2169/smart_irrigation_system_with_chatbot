@@ -29,7 +29,7 @@ function AppContent() {
   }
 }
 
-export default function JalMitraApp() {
+export default function SmartIrrigationApp() {
   return (
     <AppProvider>
       <div className="max-w-md mx-auto min-h-screen bg-background">

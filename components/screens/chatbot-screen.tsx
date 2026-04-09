@@ -32,10 +32,10 @@ export function ChatbotScreen() {
   useEffect(() => {
     if (messages.length === 0) {
       const welcomeMessages = {
-        en: "Hello! I'm JalMitra assistant. Ask me about irrigation, weather, crop care, or which crops are best for your land!",
-        kn: "ನಮಸ್ಕಾರ! ನಾನು ಜಲಮಿತ್ರ ಸಹಾಯಕ. ನೀರಾವರಿ, ಹವಾಮಾನ, ಬೆಳೆ ಅಥವಾ ನಿಮ್ಮ ಭೂಮಿಗೆ ಯಾವ ಬೆಳೆ ಉತ್ತಮ ಎಂದು ಕೇಳಿ!",
-        hi: "नमस्ते! मैं जलमित्र सहायक हूं। सिंचाई, मौसम, फसल या अपनी जमीन के लिए कौन सी फसल सबसे अच्छी है पूछें!",
-        te: "నమస్కారం! నేను జలమిత్ర సహాయకుడిని. నీటిపారుదల, వాతావరణం, పంట లేదా మీ భూమికి ఏ పంట మంచిది అని అడగండి!"
+        en: "Hello! I'm your Smart Irrigation assistant. Ask me about irrigation, weather, crop care, or which crops are best for your land!",
+        kn: "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಸ್ಮಾರ್ಟ್ ನೀರಾವರಿ ಸಹಾಯಕ. ನೀರಾವರಿ, ಹವಾಮಾನ, ಬೆಳೆ ಅಥವಾ ನಿಮ್ಮ ಭೂಮಿಗೆ ಯಾವ ಬೆಳೆ ಉತ್ತಮ ಎಂದು ಕೇಳಿ!",
+        hi: "नमस्ते! मैं आपका स्मार्ट सिंचाई सहायक हूं। सिंचाई, मौसम, फसल या अपनी जमीन के लिए कौन सी फसल सबसे अच्छी है पूछें!",
+        te: "నమస్కారం! నేను మీ స్మార్ట్ నీటిపారుదల సహాయకుడిని. నీటిపారుదల, వాతావరణం, పంట లేదా మీ భూమికి ఏ పంట మంచిది అని అడగండి!"
       }
       setMessages([{
         id: "welcome",

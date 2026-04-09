@@ -45,9 +45,9 @@ const AppContext = createContext<AppContextType | undefined>(undefined)
 
 export const translations = {
   en: {
-    appName: "JalMitra",
-    tagline: "Smart Irrigation Planning",
-    welcome: "Welcome to JalMitra",
+    appName: "Smart Irrigation System",
+    tagline: "AI-Powered Irrigation Planning",
+    welcome: "Welcome to Smart Irrigation System",
     selectLanguage: "Select Your Language",
     continue: "Continue",
     selectCrop: "Select Your Crop",
@@ -68,7 +68,7 @@ export const translations = {
     lightIrrigation: "Light Irrigation",
     waterSaved: "Water Saved",
     liters: "Liters",
-    chatbot: "Ask JalMitra",
+    chatbot: "Ask Assistant",
     voiceAssistant: "Voice Assistant",
     askQuestion: "Ask a question...",
     listening: "Listening...",
@@ -95,9 +95,9 @@ export const translations = {
     settings: "Settings"
   },
   kn: {
-    appName: "ಜಲಮಿತ್ರ",
-    tagline: "ಸ್ಮಾರ್ಟ್ ನೀರಾವರಿ ಯೋಜನೆ",
-    welcome: "ಜಲಮಿತ್ರಕ್ಕೆ ಸ್ವಾಗತ",
+    appName: "ಸ್ಮಾರ್ಟ್ ನೀರಾವರಿ ವ್ಯವಸ್ಥೆ",
+    tagline: "AI-ಆಧಾರಿತ ನೀರಾವರಿ ಯೋಜನೆ",
+    welcome: "ಸ್ಮಾರ್ಟ್ ನೀರಾವರಿ ವ್ಯವಸ್ಥೆಗೆ ಸ್ವಾಗತ",
     selectLanguage: "ನಿಮ್ಮ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
     continue: "ಮುಂದುವರಿಸಿ",
     selectCrop: "ನಿಮ್ಮ ಬೆಳೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
@@ -118,7 +118,7 @@ export const translations = {
     lightIrrigation: "ಲಘು ನೀರಾವರಿ",
     waterSaved: "ಉಳಿಸಿದ ನೀರು",
     liters: "ಲೀಟರ್",
-    chatbot: "ಜಲಮಿತ್ರ ಕೇಳಿ",
+    chatbot: "ಸಹಾಯಕನನ್ನು ಕೇಳಿ",
     voiceAssistant: "ಧ್ವನಿ ಸಹಾಯಕ",
     askQuestion: "ಪ್ರಶ್ನೆ ಕೇಳಿ...",
     listening: "ಕೇಳುತ್ತಿದೆ...",
@@ -145,9 +145,9 @@ export const translations = {
     settings: "ಸೆಟ್ಟಿಂಗ್ಸ್"
   },
   hi: {
-    appName: "जलमित्र",
-    tagline: "स्मार्ट सिंचाई योजना",
-    welcome: "जलमित्र में आपका स्वागत है",
+    appName: "स्मार्ट सिंचाई प्रणाली",
+    tagline: "AI-संचालित सिंचाई योजना",
+    welcome: "स्मार्ट सिंचाई प्रणाली में आपका स्वागत है",
     selectLanguage: "अपनी भाषा चुनें",
     continue: "जारी रखें",
     selectCrop: "अपनी फसल चुनें",
@@ -168,7 +168,7 @@ export const translations = {
     lightIrrigation: "हल्की सिंचाई",
     waterSaved: "बचाया पानी",
     liters: "लीटर",
-    chatbot: "जलमित्र से पूछें",
+    chatbot: "सहायक से पूछें",
     voiceAssistant: "वॉइस असिस्टेंट",
     askQuestion: "सवाल पूछें...",
     listening: "सुन रहा है...",
@@ -195,9 +195,9 @@ export const translations = {
     settings: "सेटिंग्स"
   },
   te: {
-    appName: "జలమిత్ర",
-    tagline: "స్మార్ట్ నీటిపారుదల ప్రణాళిక",
-    welcome: "జలమిత్రకు స్వాగతం",
+    appName: "స్మార్ట్ నీటిపారుదల వ్యవస్థ",
+    tagline: "AI-ఆధారిత నీటిపారుదల ప్రణాళిక",
+    welcome: "స్మార్ట్ నీటిపారుదల వ్యవస్థకు స్వాగతం",
     selectLanguage: "మీ భాషను ఎంచుకోండి",
     continue: "కొనసాగించు",
     selectCrop: "మీ పంటను ఎంచుకోండి",
@@ -218,7 +218,7 @@ export const translations = {
     lightIrrigation: "తేలికపాటి నీటిపారుదల",
     waterSaved: "ఆదా చేసిన నీరు",
     liters: "లీటర్లు",
-    chatbot: "జలమిత్రను అడగండి",
+    chatbot: "సహాయకుడిని అడగండి",
     voiceAssistant: "వాయిస్ అసిస్టెంట్",
     askQuestion: "ప్రశ్న అడగండి...",
     listening: "వింటోంది...",

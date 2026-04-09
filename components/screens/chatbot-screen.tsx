@@ -23,6 +23,7 @@ export function ChatbotScreen() {
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [voiceEnabled, setVoiceEnabled] = useState(true)
+  const [pendingVoiceInput, setPendingVoiceInput] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const recognitionRef = useRef<SpeechRecognition | null>(null)
 
@@ -50,26 +51,40 @@ export function ChatbotScreen() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
+  // Auto-submit voice input when listening ends
+  useEffect(() => {
+    if (pendingVoiceInput && !isListening) {
+      handleVoiceSend(pendingVoiceInput)
+      setPendingVoiceInput(null)
+    }
+  }, [pendingVoiceInput, isListening])
+
+  const langMap: Record<string, string> = {
+    en: "en-IN",
+    kn: "kn-IN", 
+    hi: "hi-IN",
+    te: "te-IN"
+  }
+
   // Initialize speech recognition
   useEffect(() => {
-    if (typeof window !== "undefined" && "webkitSpeechRecognition" in window) {
-      const SpeechRecognition = window.webkitSpeechRecognition
-      recognitionRef.current = new SpeechRecognition()
+    if (typeof window !== "undefined" && ("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+      const SpeechRecognitionAPI = window.webkitSpeechRecognition || window.SpeechRecognition
+      recognitionRef.current = new SpeechRecognitionAPI()
       recognitionRef.current.continuous = false
-      recognitionRef.current.interimResults = false
-
-      const langMap = {
-        en: "en-US",
-        kn: "kn-IN",
-        hi: "hi-IN",
-        te: "te-IN"
-      }
+      recognitionRef.current.interimResults = true
       recognitionRef.current.lang = langMap[language]
+      recognitionRef.current.maxAlternatives = 1
 
       recognitionRef.current.onresult = (event) => {
-        const transcript = event.results[0][0].transcript
+        const lastResult = event.results[event.results.length - 1]
+        const transcript = lastResult[0].transcript
         setInput(transcript)
-        setIsListening(false)
+        
+        if (lastResult.isFinal) {
+          setPendingVoiceInput(transcript)
+          setIsListening(false)
+        }
       }
 
       recognitionRef.current.onerror = () => {
@@ -89,21 +104,28 @@ export function ChatbotScreen() {
   }, [language])
 
   const toggleListening = () => {
-    if (!recognitionRef.current) return
+    if (!recognitionRef.current) {
+      const noSpeechMsg = {
+        en: "Voice input is not supported in your browser. Please type your question.",
+        kn: "ನಿಮ್ಮ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಟೈಪ್ ಮಾಡಿ.",
+        hi: "आपके ब्राउज़र में वॉइस इनपुट समर्थित नहीं है। कृपया अपना प्रश्न टाइप करें।",
+        te: "మీ బ్రౌజర్‌లో వాయిస్ ఇన్‌పుట్ మద్దతు లేదు. దయచేసి మీ ప్రశ్నను టైప్ చేయండి."
+      }
+      alert(noSpeechMsg[language])
+      return
+    }
 
     if (isListening) {
       recognitionRef.current.abort()
       setIsListening(false)
     } else {
-      const langMap = {
-        en: "en-US",
-        kn: "kn-IN",
-        hi: "hi-IN",
-        te: "te-IN"
+      try {
+        recognitionRef.current.lang = langMap[language]
+        recognitionRef.current.start()
+        setIsListening(true)
+      } catch {
+        setIsListening(false)
       }
-      recognitionRef.current.lang = langMap[language]
-      recognitionRef.current.start()
-      setIsListening(true)
     }
   }
 
@@ -111,31 +133,52 @@ export function ChatbotScreen() {
     if (!voiceEnabled || typeof window === "undefined" || !("speechSynthesis" in window)) return
 
     window.speechSynthesis.cancel()
-    const utterance = new SpeechSynthesisUtterance(text)
     
-    const langMap = {
-      en: "en-US",
-      kn: "kn-IN",
-      hi: "hi-IN",
-      te: "te-IN"
+    // Wait for voices to load
+    const speak = () => {
+      const utterance = new SpeechSynthesisUtterance(text)
+      utterance.lang = langMap[language]
+      utterance.rate = 0.85
+      utterance.pitch = 1.0
+      utterance.volume = 1.0
+
+      // Try to find a voice for the selected language
+      const voices = window.speechSynthesis.getVoices()
+      const targetLang = langMap[language]
+      
+      // Find voice matching the language
+      let selectedVoice = voices.find(voice => voice.lang === targetLang)
+      if (!selectedVoice) {
+        selectedVoice = voices.find(voice => voice.lang.startsWith(targetLang.split('-')[0]))
+      }
+      if (!selectedVoice && language === 'en') {
+        selectedVoice = voices.find(voice => voice.lang.startsWith('en'))
+      }
+      
+      if (selectedVoice) {
+        utterance.voice = selectedVoice
+      }
+
+      utterance.onstart = () => setIsSpeaking(true)
+      utterance.onend = () => setIsSpeaking(false)
+      utterance.onerror = () => setIsSpeaking(false)
+
+      window.speechSynthesis.speak(utterance)
     }
-    utterance.lang = langMap[language]
-    utterance.rate = 0.9
 
-    utterance.onstart = () => setIsSpeaking(true)
-    utterance.onend = () => setIsSpeaking(false)
-    utterance.onerror = () => setIsSpeaking(false)
-
-    window.speechSynthesis.speak(utterance)
+    // Voices may not be loaded yet
+    if (window.speechSynthesis.getVoices().length === 0) {
+      window.speechSynthesis.onvoiceschanged = speak
+    } else {
+      speak()
+    }
   }
 
-  const handleSend = () => {
-    if (!input.trim()) return
-
+  const processMessage = (messageText: string) => {
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
-      content: input.trim()
+      content: messageText
     }
 
     setMessages((prev) => [...prev, userMessage])
@@ -144,7 +187,7 @@ export function ChatbotScreen() {
     // Get chatbot response
     setTimeout(() => {
       const response = getChatbotResponse(
-        input.trim(), 
+        messageText, 
         weather, 
         language, 
         cropType, 
@@ -162,6 +205,16 @@ export function ChatbotScreen() {
       // Speak the response
       speakText(response)
     }, 500)
+  }
+
+  const handleSend = () => {
+    if (!input.trim()) return
+    processMessage(input.trim())
+  }
+
+  const handleVoiceSend = (voiceText: string) => {
+    if (!voiceText.trim()) return
+    processMessage(voiceText.trim())
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

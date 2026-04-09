@@ -3,7 +3,9 @@
 import { useApp, useTranslations } from "@/lib/app-context"
 import { Card } from "@/components/ui/card"
 import { generateWeatherForecast, getIrrigationRecommendations, calculateWaterSavings } from "@/lib/weather-data"
-import { Cloud, CloudRain, Sun, Thermometer, Droplets, Wind, CloudSun, Home, CalendarDays, MessageSquare, Settings } from "lucide-react"
+import { Cloud, CloudRain, Sun, Thermometer, Droplets, Wind, CloudSun, Home, CalendarDays, MessageSquare, Settings, Lightbulb } from "lucide-react"
+import { CropRecommendations } from "@/components/crop-recommendations"
+import { recommendationTranslations } from "@/lib/crop-recommendations"
 import { useMemo } from "react"
 import { cn } from "@/lib/utils"
 
@@ -17,6 +19,7 @@ const weatherIcons = {
 export function DashboardScreen() {
   const { language, location, cropType, soilType, setCurrentScreen } = useApp()
   const t = useTranslations()
+  const rt = recommendationTranslations[language]
 
   const weather = useMemo(() => generateWeatherForecast(), [])
   const recommendations = useMemo(
@@ -156,6 +159,15 @@ export function DashboardScreen() {
             })}
           </div>
         </Card>
+
+        {/* Crop Recommendations Section */}
+        <div className="pb-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Lightbulb className="w-5 h-5 text-primary" />
+            <h3 className="font-semibold text-foreground">{rt.cropRecommendations}</h3>
+          </div>
+          <CropRecommendations />
+        </div>
       </div>
 
       {/* Bottom Navigation */}

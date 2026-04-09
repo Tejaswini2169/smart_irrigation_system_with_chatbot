@@ -16,7 +16,7 @@ interface Message {
 }
 
 export function ChatbotScreen() {
-  const { language, setCurrentScreen } = useApp()
+  const { language, setCurrentScreen, cropType, soilType, location } = useApp()
   const t = useTranslations()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
@@ -32,10 +32,10 @@ export function ChatbotScreen() {
   useEffect(() => {
     if (messages.length === 0) {
       const welcomeMessages = {
-        en: "Hello! I'm JalMitra assistant. Ask me about irrigation, weather, or crop care.",
-        kn: "ನಮಸ್ಕಾರ! ನಾನು ಜಲಮಿತ್ರ ಸಹಾಯಕ. ನೀರಾವರಿ, ಹವಾಮಾನ ಅಥವಾ ಬೆಳೆ ಬಗ್ಗೆ ಕೇಳಿ.",
-        hi: "नमस्ते! मैं जलमित्र सहायक हूं। सिंचाई, मौसम या फसल के बारे में पूछें।",
-        te: "నమస్కారం! నేను జలమిత్ర సహాయకుడిని. నీటిపారుదల, వాతావరణం లేదా పంట గురించి అడగండి."
+        en: "Hello! I'm JalMitra assistant. Ask me about irrigation, weather, crop care, or which crops are best for your land!",
+        kn: "ನಮಸ್ಕಾರ! ನಾನು ಜಲಮಿತ್ರ ಸಹಾಯಕ. ನೀರಾವರಿ, ಹವಾಮಾನ, ಬೆಳೆ ಅಥವಾ ನಿಮ್ಮ ಭೂಮಿಗೆ ಯಾವ ಬೆಳೆ ಉತ್ತಮ ಎಂದು ಕೇಳಿ!",
+        hi: "नमस्ते! मैं जलमित्र सहायक हूं। सिंचाई, मौसम, फसल या अपनी जमीन के लिए कौन सी फसल सबसे अच्छी है पूछें!",
+        te: "నమస్కారం! నేను జలమిత్ర సహాయకుడిని. నీటిపారుదల, వాతావరణం, పంట లేదా మీ భూమికి ఏ పంట మంచిది అని అడగండి!"
       }
       setMessages([{
         id: "welcome",
@@ -143,7 +143,15 @@ export function ChatbotScreen() {
 
     // Get chatbot response
     setTimeout(() => {
-      const response = getChatbotResponse(input.trim(), weather, language)
+      const response = getChatbotResponse(
+        input.trim(), 
+        weather, 
+        language, 
+        cropType, 
+        soilType, 
+        location,
+        t
+      )
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",

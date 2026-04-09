@@ -1,4 +1,5 @@
-import type { WeatherData, IrrigationRecommendation, CropType, SoilType, Language } from "./app-context"
+import type { WeatherData, IrrigationRecommendation, CropType, SoilType, Language, Location } from "./app-context"
+import { getHighYieldCropRecommendations, analyzeCurrentCrop } from "./crop-recommendations"
 
 // Simulated weather data for demo purposes
 // In production, this would fetch from a real weather API
@@ -124,7 +125,15 @@ export function getIrrigationRecommendations(
 }
 
 // Chatbot responses based on dataset patterns
-export function getChatbotResponse(query: string, weather: WeatherData[], language: Language): string {
+export function getChatbotResponse(
+  query: string, 
+  weather: WeatherData[], 
+  language: Language,
+  cropType?: CropType | null,
+  soilType?: SoilType | null,
+  location?: Location | null,
+  translations?: { crops: Record<string, string> }
+): string {
   const lowerQuery = query.toLowerCase()
   const today = weather[0]
   const tomorrow = weather[1]
@@ -161,6 +170,70 @@ export function getChatbotResponse(query: string, weather: WeatherData[], langua
   }
 
   const resp = responses[language]
+
+  // Pattern matching for crop recommendation queries
+  const cropKeywords = [
+    "crop", "recommend", "suggest", "grow", "yield", "best", "suitable", "plant", "what should",
+    "ಬೆಳೆ", "ಶಿಫಾರಸು", "ಬೆಳೆಯಿರಿ", "ಇಳುವರಿ", "ಉತ್ತಮ",
+    "फसल", "सिफारिश", "उगाएं", "उपज", "क्या उगाएं",
+    "పంట", "సిఫార్సు", "పండించు", "దిగుబడి", "ఏమి పండించాలి"
+  ]
+
+  if (cropKeywords.some(keyword => lowerQuery.includes(keyword))) {
+    if (translations && location) {
+      const recommendations = getHighYieldCropRecommendations(
+        cropType || null, weather, soilType || null, location, language, translations
+      )
+      
+      if (recommendations.length > 0) {
+        const cropList = recommendations.slice(0, 3).map(r => r.cropDisplayName).join(", ")
+        const cropResponses = {
+          en: `Based on your location, soil, and weather: I recommend ${cropList}. ${recommendations[0].cropDisplayName} has ${recommendations[0].suitabilityScore}% suitability with ${recommendations[0].yieldPotential.toLowerCase()}.`,
+          kn: `ನಿಮ್ಮ ಸ್ಥಳ, ಮಣ್ಣು ಮತ್ತು ಹವಾಮಾನದ ಆಧಾರದ ಮೇಲೆ: ${cropList} ಶಿಫಾರಸು ಮಾಡುತ್ತೇನೆ. ${recommendations[0].cropDisplayName} ${recommendations[0].suitabilityScore}% ಸೂಕ್ತತೆ ಹೊಂದಿದೆ.`,
+          hi: `आपके स्थान, मिट्टी और मौसम के आधार पर: मैं ${cropList} की सिफारिश करता हूं। ${recommendations[0].cropDisplayName} की ${recommendations[0].suitabilityScore}% उपयुक्तता है।`,
+          te: `మీ స్థానం, నేల మరియు వాతావరణం ఆధారంగా: నేను ${cropList} సిఫార్సు చేస్తున్నాను. ${recommendations[0].cropDisplayName}కు ${recommendations[0].suitabilityScore}% అనుకూలత ఉంది.`
+        }
+        return cropResponses[language]
+      }
+    }
+    
+    const defaultCropResponses = {
+      en: "For crop recommendations, please set your location and soil type. I'll analyze conditions and suggest the best crops for high yield.",
+      kn: "ಬೆಳೆ ಶಿಫಾರಸುಗಳಿಗಾಗಿ, ದಯವಿಟ್ಟು ನಿಮ್ಮ ಸ್ಥಳ ಮತ್ತು ಮಣ್ಣಿನ ಪ್ರಕಾರವನ್ನು ಹೊಂದಿಸಿ.",
+      hi: "फसल सिफारिशों के लिए, कृपया अपना स्थान और मिट्टी का प्रकार सेट करें।",
+      te: "పంట సిఫార్సుల కోసం, దయచేసి మీ స్థానం మరియు నేల రకాన్ని సెట్ చేయండి."
+    }
+    return defaultCropResponses[language]
+  }
+
+  // Current crop analysis queries
+  const analyzeKeywords = [
+    "my crop", "current crop", "is it suitable", "good choice", "right crop",
+    "ನನ್ನ ಬೆಳೆ", "ಸೂಕ್ತವೇ", "ಸರಿಯಾದ ಬೆಳೆ",
+    "मेरी फसल", "उपयुक्त है", "सही फसल",
+    "నా పంట", "సరిపోతుందా", "సరైన పంట"
+  ]
+
+  if (analyzeKeywords.some(keyword => lowerQuery.includes(keyword))) {
+    if (cropType && location) {
+      const analysis = analyzeCurrentCrop(cropType, weather, soilType || null, location, language)
+      const analysisResponses = {
+        en: analysis.isSuitable 
+          ? `Your ${translations?.crops[cropType] || cropType} is well-suited for your conditions with ${analysis.suitabilityScore}% suitability score.`
+          : `Your ${translations?.crops[cropType] || cropType} has ${analysis.suitabilityScore}% suitability. Consider switching to a better-suited crop for higher yield.`,
+        kn: analysis.isSuitable
+          ? `ನಿಮ್ಮ ${translations?.crops[cropType] || cropType} ${analysis.suitabilityScore}% ಸೂಕ್ತತೆಯೊಂದಿಗೆ ನಿಮ್ಮ ಪರಿಸ್ಥಿತಿಗೆ ಸೂಕ್ತವಾಗಿದೆ.`
+          : `ನಿಮ್ಮ ${translations?.crops[cropType] || cropType} ${analysis.suitabilityScore}% ಸೂಕ್ತತೆ ಹೊಂದಿದೆ. ಹೆಚ್ಚಿನ ಇಳುವರಿಗಾಗಿ ಬದಲಾಯಿಸಿ.`,
+        hi: analysis.isSuitable
+          ? `आपकी ${translations?.crops[cropType] || cropType} ${analysis.suitabilityScore}% उपयुक्तता के साथ आपकी स्थिति के लिए उपयुक्त है।`
+          : `आपकी ${translations?.crops[cropType] || cropType} की ${analysis.suitabilityScore}% उपयुक्तता है। अधिक उपज के लिए बदलने पर विचार करें।`,
+        te: analysis.isSuitable
+          ? `మీ ${translations?.crops[cropType] || cropType} ${analysis.suitabilityScore}% అనుకూలతతో మీ పరిస్థితులకు అనుకూలం.`
+          : `మీ ${translations?.crops[cropType] || cropType}కు ${analysis.suitabilityScore}% అనుకూలత ఉంది. అధిక దిగుబడి కోసం మారడాన్ని పరిగణించండి.`
+      }
+      return analysisResponses[language]
+    }
+  }
 
   // Pattern matching for common queries
   if (lowerQuery.includes("irrigate") || lowerQuery.includes("today") || lowerQuery.includes("ನೀರು") || lowerQuery.includes("ಇಂದು") || lowerQuery.includes("सिंचाई") || lowerQuery.includes("आज")) {
